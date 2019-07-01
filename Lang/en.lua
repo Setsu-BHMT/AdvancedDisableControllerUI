@@ -13,12 +13,20 @@ ZO_CreateStringId("ADCUI_DESCRIPTION", "Disable controller UI and adjust compass
 -- General settings header
 ZO_CreateStringId("ADCUI_GENERAL_SETTINGS_HEADER", "General Settings")
 
--- Enable gamepad UI override
-ZO_CreateStringId("ADCUI_USE_CONTROLLER_UI", "Use Default UI In Gamepad Mode")
-
 -- Account/character wide settings
 ZO_CreateStringId("ADCUI_ACCOUNT_WIDE_SETTINGS", "Use Account-wide Settings")
 ZO_CreateStringId("ADCUI_ACCOUNT_WIDE_SETTINGS_TOOLTIP", "Change between character and account wide settings")
+
+-- Enable gamepad UI override
+ZO_CreateStringId("ADCUI_USE_CONTROLLER_UI", "Use Default UI In Gamepad Mode")
+
+-- Use gamepad button icons
+ZO_CreateStringId("ADCUI_USE_GAMEPAD_BUTTONS", "Use Gamepad Button Icons")
+ZO_CreateStringId("ADCUI_USE_GAMEPAD_BUTTONS_TOOLTIP", "Replaces keyboard icons with gamepad icons")
+
+-- Use gamepad action bar
+ZO_CreateStringId("ADCUI_USE_GAMEPAD_ACTION_BAR", "Use Gamepad Action Bar")
+ZO_CreateStringId("ADCUI_USE_GAMEPAD_ACTION_BAR_TOOLTIP", "Uses gamepad skill and resource bars")
 
 -- Compass header
 ZO_CreateStringId("ADCUI_COMPASS_HEADER", "Compass")

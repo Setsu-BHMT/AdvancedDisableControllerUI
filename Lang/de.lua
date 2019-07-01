@@ -13,12 +13,20 @@ ZO_CreateStringId("ADCUI_DESCRIPTION", "Deaktiviert die GamePad UI und die Kompa
 -- General settings header
 ZO_CreateStringId("ADCUI_GENERAL_SETTINGS_HEADER", "Allgemeine Einstellungen")
 
--- disable addon
-ZO_CreateStringId("ADCUI_USE_CONTROLLER_UI", "Verwenden Controller UI")
-
 -- Account/character wide settings
 ZO_CreateStringId("ADCUI_ACCOUNT_WIDE_SETTINGS", "Verwenden Sie kontoweite Einstellungen")
 ZO_CreateStringId("ADCUI_ACCOUNT_WIDE_SETTINGS_TOOLTIP", "Wechsel zwischen Charakter und Account-weiten Einstellungen")
+
+-- disable addon
+ZO_CreateStringId("ADCUI_USE_CONTROLLER_UI", "Verwenden Controller UI")
+
+-- Use gamepad button icons
+ZO_CreateStringId("ADCUI_USE_GAMEPAD_BUTTONS", "Verwenden Sie Gamepad-Schaltflächensymbole")
+ZO_CreateStringId("ADCUI_USE_GAMEPAD_BUTTONS_TOOLTIP", "Ersetzt Tastatursymbole durch Gamepad-Symbole")
+
+-- Use gamepad action bar
+ZO_CreateStringId("ADCUI_USE_GAMEPAD_ACTION_BAR", "Verwenden Sie die Gamepad-Aktionsleiste")
+ZO_CreateStringId("ADCUI_USE_GAMEPAD_ACTION_BAR_TOOLTIP", "Verwendet Gamepad-Fähigkeiten und Ressourcenleisten")
 
 -- Compass header
 ZO_CreateStringId("ADCUI_COMPASS_HEADER", "Kompass")

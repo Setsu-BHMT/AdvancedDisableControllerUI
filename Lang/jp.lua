@@ -13,12 +13,20 @@ ZO_CreateStringId("ADCUI_DESCRIPTION", "ゲームコントローラUIを無効�
 -- General settings header
 ZO_CreateStringId("ADCUI_GENERAL_SETTINGS_HEADER", "一般設定")
 
--- disable addon
-ZO_CreateStringId("ADCUI_USE_CONTROLLER_UI", "コントローラUIを使用する")
-
 -- Account/character wide settings
 ZO_CreateStringId("ADCUI_ACCOUNT_WIDE_SETTINGS", "アカウント全体の設定を使用する")
 ZO_CreateStringId("ADCUI_ACCOUNT_WIDE_SETTINGS_TOOLTIP", "設定をキャラクターかアカウント全体かに変更する")
+
+-- disable addon
+ZO_CreateStringId("ADCUI_USE_CONTROLLER_UI", "コントローラUIを使用する")
+
+-- Use gamepad button icons
+ZO_CreateStringId("ADCUI_USE_GAMEPAD_BUTTONS", "コントローラボタンアイコンを使う")
+ZO_CreateStringId("ADCUI_USE_GAMEPAD_BUTTONS_TOOLTIP", "キーボードアイコンをコントローラアイコンに置き換えます")
+
+-- Use gamepad action bar
+ZO_CreateStringId("ADCUI_USE_GAMEPAD_ACTION_BAR", "コントローラアクションバーを使う")
+ZO_CreateStringId("ADCUI_USE_GAMEPAD_ACTION_BAR_TOOLTIP", "コントローラのスキルとリソースバーを使う")
 
 -- Compass header
 ZO_CreateStringId("ADCUI_COMPASS_HEADER", "コンパス")

@@ -17,7 +17,7 @@ function LoadLAM2Panel()
   }
   local OptionsData = 
   {
-    { -- description
+    { -- Description
       type = "description",
       text = GetString(ADCUI_DESCRIPTION),
     },
@@ -25,24 +25,6 @@ function LoadLAM2Panel()
 			type = "header",
 			name = GetString(ADCUI_GENERAL_SETTINGS_HEADER),
 		},
-    { -- Use Controller UI
-      type = "checkbox",
-      name = GetString(ADCUI_USE_CONTROLLER_UI),
-      tooltip = GetString(ADCUI_USE_CONTROLLER_UI),
-      requiresReload = false,
-      default = false,
-      getFunc = 
-        function()
-          local settings = ADCUI:getSettings()
-          return settings.useControllerUI
-        end,
-      setFunc = 
-        function(value) 
-          local settings = ADCUI:getSettings()
-          settings.useControllerUI = value
-          ADCUI:cycleGamepadPreferredMode()
-        end,
-    },
     { -- Use Account Wide Settings
       type = "checkbox",
       name = GetString(ADCUI_ACCOUNT_WIDE_SETTINGS),
@@ -57,6 +39,47 @@ function LoadLAM2Panel()
         function(value) 
           ADCUI.savedVariables.useAccountWideSettings = value
           ADCUI.savedVariablesAccountWide.useAccountWideSettings = value
+        end,
+    },
+    { -- Use Controller UI
+      type = "checkbox",
+      name = GetString(ADCUI_USE_CONTROLLER_UI),
+      tooltip = GetString(ADCUI_USE_CONTROLLER_UI),
+      default = false,
+      getFunc = ADCUI.shouldUseGamepadUI,
+      setFunc = 
+        function(value) 
+          local settings = ADCUI:getSettings()
+          settings.useControllerUI = value
+          ADCUI:cycleGamepadPreferredMode()
+        end,
+    },
+    { -- Use Gamepad Buttons
+      type = "checkbox",
+      name = GetString(ADCUI_USE_GAMEPAD_BUTTONS),
+      tooltip = GetString(ADCUI_USE_GAMEPAD_BUTTONS_TOOLTIP),
+      default = false,
+      disabled = ADCUI.shouldUseGamepadUI,
+      getFunc = ADCUI.shouldUseGamepadButtons,
+      setFunc = 
+        function(value) 
+          local settings = ADCUI:getSettings()
+          settings.useGamepadButtons = value
+          ADCUI:cycleGamepadPreferredMode()
+        end,
+    },
+    { -- Use Gamepad Action Bar
+      type = "checkbox",
+      name = GetString(ADCUI_USE_GAMEPAD_ACTION_BAR),
+      tooltip = GetString(ADCUI_USE_GAMEPAD_ACTION_BAR_TOOLTIP),
+      default = false,
+      disabled = true, --ADCUI.shouldUseGamepadUI,  -- TODO
+      getFunc = ADCUI.shouldUseGamepadActionBar,
+      setFunc = 
+        function(value) 
+          local settings = ADCUI:getSettings()
+          settings.useGamepadActionBar = value
+          -- do something here
         end,
     },
     { -- [Compass]
@@ -171,6 +194,7 @@ function LoadLAM2Panel()
       choicesValues = ADCUI.const.FONTS,
       default = ADCUI.default.fonts.reticle,
       scrollable = true,
+      disabled = ADCUI.shouldUseGamepadUI,
       getFunc = function()
           local settings = ADCUI:getSettings()
           return settings.fonts.reticle
@@ -191,6 +215,7 @@ function LoadLAM2Panel()
       choicesValues = ADCUI.const.FONTS,
       default = ADCUI.default.fonts.reticleContext,
       scrollable = true,
+      disabled = ADCUI.shouldUseGamepadUI,
       getFunc = function()
           local settings = ADCUI:getSettings()
           return settings.fonts.reticleContext
@@ -211,6 +236,7 @@ function LoadLAM2Panel()
       choicesValues = ADCUI.const.FONTS,
       default = ADCUI.default.fonts.stealthIcon,
       scrollable = true,
+      disabled = ADCUI.shouldUseGamepadUI,
       getFunc = function()
           local settings = ADCUI:getSettings()
           return settings.fonts.stealthIcon

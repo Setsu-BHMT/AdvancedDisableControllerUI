@@ -1,7 +1,7 @@
 -- Advanced Disable Controller UI
 -- Author: Lionas, Setsu
 
--- Note to addon authors: these are safe to call from your code
+-- Note to addon authors: these are safe to call from your code, but make sure you add ADCUI as an optional dependency
 
 if not ADCUI.isDefined then return end
 
@@ -44,20 +44,33 @@ function ADCUI:cycleGamepadPreferredMode()
   end
 end
 
--- return whether default gamepad UI should be used
-function ADCUI:shouldUseGamepadUI()
-  local settings = ADCUI:getSettings()
-
-  return settings and settings.useControllerUI
-end
-
 -- get settings for either character or account wide
 function ADCUI:getSettings()
   if not ADCUI.savedVariablesAccountWide and not ADCUI.savedVariables then
     return nil  -- this will cause us to default to override in the very early stages of ui loading
+  else
+    return ADCUI.savedVariablesAccountWide.useAccountWideSettings and ADCUI.savedVariablesAccountWide or ADCUI.savedVariables
   end
+end
+local function getSettingHelper(settingName)
+  local settings = ADCUI:getSettings()
 
-  return ADCUI.savedVariablesAccountWide.useAccountWideSettings and ADCUI.savedVariablesAccountWide or ADCUI.savedVariables
+  return settings and settings[settingName]
+end
+
+-- return whether default gamepad UI should be used
+function ADCUI:shouldUseGamepadUI()
+  return getSettingHelper("useControllerUI")
+end
+
+-- return whether gamepad buttons should be used
+function ADCUI:shouldUseGamepadButtons()
+  return getSettingHelper("useGamepadButtons")
+end
+
+-- return whether gamepad action bar should be used
+function ADCUI:shouldUseGamepadActionBar()
+  return getSettingHelper("useGamepadActionBar")
 end
 
 -- set the reticle fonts

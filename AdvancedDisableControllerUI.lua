@@ -7,15 +7,14 @@
 --    adjust font size for reticle, context, stealth
 --    adjust stack all for launder
 --    refactored code to override early again to fix compatibility issue with Lazy Writ Crafter
+--    added configuration for gamepad button override  change category shows not bound but still works
 
 -- TODO:
 --    world map zooming...etc [worldmap.lua]
 --    restore gamepad action bar
---    configurable override of gamepad buttons
 
 -- BUGS:
 --    sprint is now a toggle
---    [Dolgubon's lazy writ crafter] auto open container not working ... loop consistantly
 
 if not ADCUI.isDefined then return end
 
@@ -23,7 +22,6 @@ if not ADCUI.isDefined then return end
 -- set the override early so that other addons react correctly
 ADCUI:setGamepadPreferredModeOverrideState(true)
 
--- [Private Functions]
 
 -- Initialize preferences
 local function initializePrefs()
@@ -67,8 +65,15 @@ function onGamepadModeChanged(eventCode, gamepadPreferred)
       return
     end
 
-    ADCUI:setGamepadIcons()
-    ADCUI:setGamepadUISettings()
+    if ADCUI:shouldUseGamepadButtons() then
+      ADCUI:setGamepadIcons()
+      ADCUI:setGamepadUISettings()
+    end
+    
+    --adjust fonts (we don't need to undo these changes on gamepad mode change, the game will do it for us)
+    local settings = ADCUI:getSettings()
+    ADCUI:setReticleFont(settings.fonts.reticle, settings.fonts.reticleContext)
+    ADCUI:setStealthIconFont(settings.fonts.stealthIcon)
 
     ZO_Alert(UI_ALERT_CATEGORY_ALERT, SOUNDS.DEFAULT_CLICK, "Gamepad UI override enabled")
   else

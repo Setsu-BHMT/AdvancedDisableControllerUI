@@ -10,11 +10,9 @@ local backupGamepadIcons = {}
 -- to work correctly this must be called:
 --    1. in gamepad mode
 --    2. when the gamepad mode was enabled our myIsInGamepadPreferredMode was not in effect
+--    3. after the switch the default UI had a chance to initalize 
+--        (you can't make the switch and then immediatly call this, you need to wait for the gamepad change event)
 function ADCUI:getGamepadIcons()
-  if self.vars.isGamepadKeysInitialized then
-    return
-  end
-  
   for _, control in ipairs(self.const.CONTROLS_TO_BACKUP) do
     backupGamepadIcons[control] = control:GetText()
   end
@@ -24,10 +22,6 @@ end
 
 -- load the stored gamepad icons
 function ADCUI:setGamepadIcons()
-  if not self.vars.isGamepadKeysInitialized then
-    return
-  end
-
   for _, control in ipairs(self.const.CONTROLS_TO_BACKUP) do
     control:SetText(backupGamepadIcons[control])
   end
@@ -54,11 +48,6 @@ function ADCUI:setGamepadUISettings()
   PLAYER_INVENTORY.houseBankWithdrawTabKeybindButtonGroup[1].keybind = "UI_SHORTCUT_LEFT_STICK"
   PLAYER_INVENTORY.houseBankDepositTabKeybindButtonGroup[1].keybind = "UI_SHORTCUT_LEFT_STICK"
   LOCK_PICK.keybindStripDescriptor[4].alignment = KEYBIND_STRIP_ALIGN_RIGHT
-  
-  --adjust fonts (we don't need to undo these changes on gamepad mode change, the game will do it for us)
-  local settings = ADCUI:getSettings()
-  ADCUI:setReticleFont(settings.fonts.reticle, settings.fonts.reticleContext)
-  ADCUI:setStealthIconFont(settings.fonts.stealthIcon)
   
   -- adjust horizontal positioning of reticle labels since they're too far off to the right
   if not isReticleAdjusted then

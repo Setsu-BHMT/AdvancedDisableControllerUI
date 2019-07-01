@@ -8,7 +8,8 @@ if not ADCUI.isDefined then return end
 -- we do this by reverting our override function back to the original during dialog creation, then switching back after the call
 local originalZOShowDialog = _G["ZO_Dialogs_ShowDialog"]
 local function myShowDialog(name, data, textParams, isGamepad)
-  if not ADCUI:originalIsInGamepadPreferredMode() or ADCUI:shouldUseGamepadUI() then
+  if not ADCUI:originalIsInGamepadPreferredMode() or 
+     ADCUI:shouldUseGamepadUI() or not ADCUI:shouldUseGamepadButtons() then
     return originalZOShowDialog(name, data, textParams, isGamepad)
   end
   
@@ -42,7 +43,7 @@ local function setStackAllKeybind(keybindButtonGroupDescriptor)
 end
 
 local function onAddOrUpdateKeybindButtonGroup(self, keybindButtonGroupDescriptor, stateIndex)
-  if not keybindButtonGroupDescriptor then
+  if not keybindButtonGroupDescriptor or not ADCUI:shouldUseGamepadButtons() then
     return
   end
 

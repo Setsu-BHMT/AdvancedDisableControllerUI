@@ -14,7 +14,9 @@ ADCUI.default = {
   anchorOffsetY = 40,
   pinLabelScale = 1,
   useAccountWideSettings = false,
-  useControllerUI = false,  -- do not modify this yourself! call ADCUI:toggleControllerUI or your UI will be left in an inconsistent state
+  useControllerUI = false,
+  useGamepadButtons = true,
+  useGamepadActionBar = true,
   
   -- fonts
   fonts = {
