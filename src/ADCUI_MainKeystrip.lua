@@ -172,7 +172,7 @@ local keybindButtonGroupDescriptor = {
 -- handle the scene state changed event to inject our own buttons to the main menu strip
 local function onSceneStateChanged(scene, oldState, newState)
   -- see if current scene is on the main menu strip
-  if not ADCUI.vars.isGamepadEnabled or not scene or 
+  if not ADCUI:originalIsInGamepadPreferredMode() or not scene or 
     (newState == SCENE_SHOWN) or (newState == SCENE_HIDDEN) then
     return
   end

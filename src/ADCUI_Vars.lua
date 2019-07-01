@@ -123,9 +123,7 @@ ADCUI.const = {
 
 ADCUI.vars = {
   isLockpicking = false,
-  isGamepadEnabled = GetSetting_Bool(SETTING_TYPE_GAMEPAD, GAMEPAD_SETTING_GAMEPAD_PREFERRED),
   isGamepadKeysInitialized = false,
-  originalIsInGamepadPreferredMode = IsInGamepadPreferredMode,
 }
 
 

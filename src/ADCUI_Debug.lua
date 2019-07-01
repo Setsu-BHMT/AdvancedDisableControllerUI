@@ -5,17 +5,10 @@ if not ADCUI.isDefined then return end
 
 
 -- slash command
--- local function foo()
-
- -- RETICLE:ApplyPlatformStyle(style) 
-    -- {
-        -- font = "ZoFontGamepad42",
-        -- keybindButtonStyle = KEYBIND_STRIP_GAMEPAD_STYLE,
-    -- }
- -- RETICLE.stealthIcon:ApplyPlatformStyle(style) {font = "ZoFontGamepad36"}
- -- LOCK_PICK.stealthIcon:ApplyPlatformStyle(style)
--- end
--- SLASH_COMMANDS["/foo"] = foo
+--  local function foo()
+ 
+--  end
+--  SLASH_COMMANDS["/foo"] = foo
 
 -- -- hook the SCENE_MANAGER so that we know when interested scenes are shown
 -- ZO_PreHook(SCENE_MANAGER, "OnSceneStateChange", function(self, scene, oldstate, newstate)

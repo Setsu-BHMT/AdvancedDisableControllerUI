@@ -1,42 +1,47 @@
 -- Advanced Disable Controller UI
 -- Author: Lionas, Setsu
 
+-- Note to addon authors: these are safe to call from your code
+
 if not ADCUI.isDefined then return end
 
 
+-- call the original IsInGamepadPreferredMode function
+local originalIsInGamepadPreferredMode = IsInGamepadPreferredMode
+function ADCUI:originalIsInGamepadPreferredMode()
+  return originalIsInGamepadPreferredMode()
+end
+
+-- enable or disable override of IsInGamepadPreferredMode
+local function myIsInGamepadPreferredMode()
+  --DEBUG: find out who called us
+  --d(debug.traceback())
+
+  local isInGamepadMode = ADCUI:originalIsInGamepadPreferredMode()
+
+  if ADCUI:shouldUseGamepadUI() then
+    return isInGamepadMode
+  else
+    return isInGamepadMode and ADCUI.vars.isLockpicking
+  end
+end
+function ADCUI:setGamepadPreferredModeOverrideState(state)
+  if state then
+    _G["IsInGamepadPreferredMode"] = myIsInGamepadPreferredMode
+  else
+    _G["IsInGamepadPreferredMode"] = originalIsInGamepadPreferredMode
+  end
+end
+
 -- switch the gamepad enabled state twice, because some UI elements grab the state before we can properly do an update
 function ADCUI:cycleGamepadPreferredMode()
-  if self.vars.isGamepadEnabled then
+  if ADCUI:originalIsInGamepadPreferredMode() then
     SetSetting(SETTING_TYPE_GAMEPAD, GAMEPAD_SETTING_GAMEPAD_PREFERRED, "false")
     SetSetting(SETTING_TYPE_GAMEPAD, GAMEPAD_SETTING_GAMEPAD_PREFERRED, "true")
   else
     SetSetting(SETTING_TYPE_GAMEPAD, GAMEPAD_SETTING_GAMEPAD_PREFERRED, "true")
     SetSetting(SETTING_TYPE_GAMEPAD, GAMEPAD_SETTING_GAMEPAD_PREFERRED, "false")
   end
-end
-
--- switch whether to use gamepad UI
--- input is optional, default is change to opposite state
-function toggleControllerUI()
-  ADCUI:toggleControllerUI()  -- for backward compatability if any other addon calls this
-end
-function ADCUI:toggleControllerUI(state)
-  local settings = ADCUI:getSettings()
-  
-  if (state == settings.useControllerUI) then
-    return -- requested state is the same as current state, so do nothing
-  end
-
-	settings.useControllerUI = not settings.useControllerUI
-  
-  if settings.useControllerUI then
-    _G["IsInGamepadPreferredMode"] = self.vars.originalIsInGamepadPreferredMode  -- this is important, because some UI elements initialize before we get notified of game mode changes
-  elseif self.vars.isGamepadKeysInitialized then
-    -- if gamepad settings is not initialized then we let the game mode change event handler deal with overriding and initialization
-    _G["IsInGamepadPreferredMode"] = myIsInGamepadPreferredMode
-  end
-  
-  self:cycleGamepadPreferredMode()
 end
 
 -- return whether default gamepad UI should be used
@@ -46,13 +51,12 @@ function ADCUI:shouldUseGamepadUI()
   return settings and settings.useControllerUI
 end
 
--- call the original IsInGamepadPreferredMode function
-function ADCUI:originalIsInGamepadPreferredMode()
-  return self.vars.originalIsInGamepadPreferredMode()
-end
-
 -- get settings for either character or account wide
 function ADCUI:getSettings()
+  if not ADCUI.savedVariablesAccountWide and not ADCUI.savedVariables then
+    return nil  -- this will cause us to default to override in the very early stages of ui loading
+  end
+
   return ADCUI.savedVariablesAccountWide.useAccountWideSettings and ADCUI.savedVariablesAccountWide or ADCUI.savedVariables
 end
 

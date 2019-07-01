@@ -15,7 +15,7 @@ function ADCUI:getGamepadIcons()
     return
   end
   
-  for i, control in ipairs(self.const.CONTROLS_TO_BACKUP) do
+  for _, control in ipairs(self.const.CONTROLS_TO_BACKUP) do
     backupGamepadIcons[control] = control:GetText()
   end
   
@@ -27,8 +27,8 @@ function ADCUI:setGamepadIcons()
   if not self.vars.isGamepadKeysInitialized then
     return
   end
-  
-  for i, control in ipairs(self.const.CONTROLS_TO_BACKUP) do
+
+  for _, control in ipairs(self.const.CONTROLS_TO_BACKUP) do
     control:SetText(backupGamepadIcons[control])
   end
 end
@@ -40,7 +40,6 @@ function ADCUI:setGamepadUISettings()
   LORE_READER.PCKeybindStripDescriptor = LORE_READER.gamepadKeybindStripDescriptor          -- enables gamepad controls when reading books
   KEYBIND_STRIP_STANDARD_STYLE.alwaysPreferGamepadMode = true                               -- change default button style to the gamepad version
   QUEST_JOURNAL_KEYBOARD.keybindStripDescriptor[2].keybind = "UI_SHORTCUT_SECONDARY"        -- switch show quest location to X
-  QUEST_JOURNAL_KEYBOARD.keybindStripDescriptor[4].keybind = "UI_SHORTCUT_LEFT_STICK"       -- switch show quest location to left stick click
   table.insert(QUEST_JOURNAL_KEYBOARD.keybindStripDescriptor, {                             -- build an extra keybind for the original keyboard keybind so that they both work
     name = GetString(SI_QUEST_JOURNAL_SHOW_ON_MAP) .. "_keyboard",
     keybind = "UI_SHORTCUT_SHOW_QUEST_ON_MAP",
@@ -78,7 +77,6 @@ function ADCUI:setKeyboardUISettings()
   LORE_READER.PCKeybindStripDescriptor = backupLoreReaderKeyboardKeybind
   KEYBIND_STRIP_STANDARD_STYLE.alwaysPreferGamepadMode = false
   QUEST_JOURNAL_KEYBOARD.keybindStripDescriptor[2].keybind = "UI_SHORTCUT_SHOW_QUEST_ON_MAP"
-  QUEST_JOURNAL_KEYBOARD.keybindStripDescriptor[4].keybind = "UI_SHORTCUT_NEGATIVE"
   if (QUEST_JOURNAL_KEYBOARD.keybindStripDescriptor[#QUEST_JOURNAL_KEYBOARD.keybindStripDescriptor].isAddedByADCUI) then
     table.remove(QUEST_JOURNAL_KEYBOARD.keybindStripDescriptor) -- we added this manually, now we take it back
   end

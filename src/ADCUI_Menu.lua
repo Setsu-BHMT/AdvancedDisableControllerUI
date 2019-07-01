@@ -29,6 +29,7 @@ function LoadLAM2Panel()
       type = "checkbox",
       name = GetString(ADCUI_USE_CONTROLLER_UI),
       tooltip = GetString(ADCUI_USE_CONTROLLER_UI),
+      requiresReload = false,
       default = false,
       getFunc = 
         function()
@@ -37,7 +38,9 @@ function LoadLAM2Panel()
         end,
       setFunc = 
         function(value) 
-          ADCUI:toggleControllerUI(value)
+          local settings = ADCUI:getSettings()
+          settings.useControllerUI = value
+          ADCUI:cycleGamepadPreferredMode()
         end,
     },
     { -- Use Account Wide Settings
@@ -175,7 +178,7 @@ function LoadLAM2Panel()
       setFunc = function(value)
           local settings = ADCUI:getSettings()
           settings.fonts.reticle = value
-          if ADCUI.vars.isGamepadEnabled and not ADCUI:shouldUseGamepadUI() then
+          if ADCUI:originalIsInGamepadPreferredMode() and not ADCUI:shouldUseGamepadUI() then
             ADCUI:setReticleFont(value, settings.fonts.reticleContext)
           end
         end,
@@ -195,7 +198,7 @@ function LoadLAM2Panel()
       setFunc = function(value)
           local settings = ADCUI:getSettings()
           settings.fonts.reticleContext = value
-          if ADCUI.vars.isGamepadEnabled and not ADCUI:shouldUseGamepadUI() then
+          if ADCUI:originalIsInGamepadPreferredMode() and not ADCUI:shouldUseGamepadUI() then
             ADCUI:setReticleFont(settings.fonts.reticle, value)
           end
         end,
@@ -215,7 +218,7 @@ function LoadLAM2Panel()
       setFunc = function(value)
           local settings = ADCUI:getSettings()
           settings.fonts.stealthIcon = value
-          if ADCUI.vars.isGamepadEnabled and not ADCUI:shouldUseGamepadUI() then
+          if ADCUI:originalIsInGamepadPreferredMode() and not ADCUI:shouldUseGamepadUI() then
             ADCUI:setStealthIconFont(value)
           end
         end,
