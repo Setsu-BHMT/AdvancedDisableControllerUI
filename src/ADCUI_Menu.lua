@@ -71,7 +71,7 @@ function LoadLAM2Panel()
     { -- Use Gamepad Action Bar
       type = "checkbox",
       name = GetString(ADCUI_USE_GAMEPAD_ACTION_BAR),
-      tooltip = GetString(ADCUI_USE_GAMEPAD_ACTION_BAR_TOOLTIP),
+      tooltip = "Sorry under construction",--GetString(ADCUI_USE_GAMEPAD_ACTION_BAR_TOOLTIP),
       default = false,
       disabled = true, --ADCUI.shouldUseGamepadUI,  -- TODO
       getFunc = ADCUI.shouldUseGamepadActionBar,

@@ -96,3 +96,4 @@ function ADCUI:setStealthIconFont(fontName)
   RETICLE.stealthIcon:ApplyPlatformStyle(style)
   LOCK_PICK.stealthIcon:ApplyPlatformStyle(style)
 end
+

@@ -90,10 +90,13 @@ local function onLoad(event, addon)
   initializePrefs()
   onUpdateCompass()
 
-  if ADCUI:originalIsInGamepadPreferredMode() and not ADCUI:shouldUseGamepadUI() then
-    -- we loaded in gamepad mode but with our override enabled, so many controls initialized with keyboard settings
-    -- so let our mode change event handler take care of grabbing the gamepad settings and switching the override back on
-    onGamepadModeChanged(0, true)
+  if ADCUI:originalIsInGamepadPreferredMode() then
+    -- we loaded in gamepad mode but with our override enabled, so many controls initialized in an inconsistent state
+    if ADCUI:shouldUseGamepadUI() then
+      ADCUI:cycleGamepadPreferredMode() -- fix inconsistent state
+    else
+      onGamepadModeChanged(0, true) -- let onGamepadModeChanged take care of grabbing the gamepad settings
+    end
   end
 
   ZO_CompassFrame:SetHandler("OnUpdate", frameUpdate)
