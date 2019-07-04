@@ -46,7 +46,11 @@ function LoadLAM2Panel()
       name = GetString(ADCUI_USE_CONTROLLER_UI),
       tooltip = GetString(ADCUI_USE_CONTROLLER_UI),
       default = false,
-      getFunc = ADCUI.shouldUseGamepadUI,
+      getFunc = 
+        function(value)
+          local settings = ADCUI:getSettings()
+          return settings.useControllerUI
+        end,
       setFunc = 
         function(value) 
           local settings = ADCUI:getSettings()
@@ -59,8 +63,16 @@ function LoadLAM2Panel()
       name = GetString(ADCUI_USE_GAMEPAD_BUTTONS),
       tooltip = GetString(ADCUI_USE_GAMEPAD_BUTTONS_TOOLTIP),
       default = false,
-      disabled = ADCUI.shouldUseGamepadUI,
-      getFunc = ADCUI.shouldUseGamepadButtons,
+      disabled = 
+        function(value)
+          local settings = ADCUI:getSettings()
+          return settings.useControllerUI
+        end,
+      getFunc = 
+        function(value)
+          local settings = ADCUI:getSettings()
+          return settings.useGamepadButtons
+        end,
       setFunc = 
         function(value) 
           local settings = ADCUI:getSettings()
@@ -71,15 +83,24 @@ function LoadLAM2Panel()
     { -- Use Gamepad Action Bar
       type = "checkbox",
       name = GetString(ADCUI_USE_GAMEPAD_ACTION_BAR),
-      tooltip = "Sorry under construction",--GetString(ADCUI_USE_GAMEPAD_ACTION_BAR_TOOLTIP),
+      tooltip = GetString(ADCUI_USE_GAMEPAD_ACTION_BAR_TOOLTIP),
       default = false,
-      disabled = true, --ADCUI.shouldUseGamepadUI,  -- TODO
-      getFunc = ADCUI.shouldUseGamepadActionBar,
+      disabled = 
+        function(value)
+          local settings = ADCUI:getSettings()
+          return settings.useControllerUI
+        end,
+      getFunc = 
+        function(value)
+          local settings = ADCUI:getSettings()
+          return settings.useGamepadActionBar
+        end,
       setFunc = 
         function(value) 
           local settings = ADCUI:getSettings()
           settings.useGamepadActionBar = value
-          -- do something here
+          ADCUI:setGamepadActionBarOverrideState(value)
+          ADCUI:cycleGamepadPreferredMode()
         end,
     },
     { -- [Compass]
@@ -194,7 +215,6 @@ function LoadLAM2Panel()
       choicesValues = ADCUI.const.FONTS,
       default = ADCUI.default.fonts.reticle,
       scrollable = true,
-      disabled = ADCUI.shouldUseGamepadUI,
       getFunc = function()
           local settings = ADCUI:getSettings()
           return settings.fonts.reticle
@@ -202,7 +222,7 @@ function LoadLAM2Panel()
       setFunc = function(value)
           local settings = ADCUI:getSettings()
           settings.fonts.reticle = value
-          if ADCUI:originalIsInGamepadPreferredMode() and not ADCUI:shouldUseGamepadUI() then
+          if ADCUI:originalIsInGamepadPreferredMode() and not settings.useControllerUI then
             ADCUI:setReticleFont(value, settings.fonts.reticleContext)
           end
         end,
@@ -215,7 +235,6 @@ function LoadLAM2Panel()
       choicesValues = ADCUI.const.FONTS,
       default = ADCUI.default.fonts.reticleContext,
       scrollable = true,
-      disabled = ADCUI.shouldUseGamepadUI,
       getFunc = function()
           local settings = ADCUI:getSettings()
           return settings.fonts.reticleContext
@@ -223,7 +242,7 @@ function LoadLAM2Panel()
       setFunc = function(value)
           local settings = ADCUI:getSettings()
           settings.fonts.reticleContext = value
-          if ADCUI:originalIsInGamepadPreferredMode() and not ADCUI:shouldUseGamepadUI() then
+          if ADCUI:originalIsInGamepadPreferredMode() and not settings.useControllerUI then
             ADCUI:setReticleFont(settings.fonts.reticle, value)
           end
         end,
@@ -236,7 +255,6 @@ function LoadLAM2Panel()
       choicesValues = ADCUI.const.FONTS,
       default = ADCUI.default.fonts.stealthIcon,
       scrollable = true,
-      disabled = ADCUI.shouldUseGamepadUI,
       getFunc = function()
           local settings = ADCUI:getSettings()
           return settings.fonts.stealthIcon
@@ -244,7 +262,7 @@ function LoadLAM2Panel()
       setFunc = function(value)
           local settings = ADCUI:getSettings()
           settings.fonts.stealthIcon = value
-          if ADCUI:originalIsInGamepadPreferredMode() and not ADCUI:shouldUseGamepadUI() then
+          if ADCUI:originalIsInGamepadPreferredMode() and not settings.useControllerUI then
             ADCUI:setStealthIconFont(value)
           end
         end,

@@ -126,6 +126,8 @@ ADCUI.const = {
 ADCUI.vars = {
   isLockpicking = false,
   isGamepadKeysInitialized = false,
+  isGamepadActionBarOverrideInitialized = false,
+  shouldBlockOverrideRequests = false,  -- internal signaling for temporary use
 }
 
 

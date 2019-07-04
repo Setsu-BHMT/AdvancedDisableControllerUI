@@ -2,16 +2,11 @@
 -- Author: Lionas, Setsu
 
 -- CHANGELOG:
---    account wide settings
---    lockpick menu move B to right
---    adjust font size for reticle, context, stealth
---    adjust stack all for launder
---    refactored code to override early again to fix compatibility issue with Lazy Writ Crafter
---    added configuration for gamepad button override  change category shows not bound but still works
+--    preliminary implementation for gamepad action bar override
+--      *keys still show keyboard mapping
 
 -- TODO:
 --    world map zooming...etc [worldmap.lua]
---    restore gamepad action bar
 
 -- BUGS:
 --    sprint is now a toggle
@@ -39,6 +34,7 @@ end
 local function initializeGamepadIcons(eventCode, gamepadPreferred)
   if gamepadPreferred then
     ADCUI:getGamepadIcons()
+    ADCUI.vars.shouldBlockOverrideRequests = false
     ADCUI:setGamepadPreferredModeOverrideState(true)
     EVENT_MANAGER:UnregisterForEvent(ADCUI.const.ADDON_NAME, EVENT_GAMEPAD_PREFERRED_MODE_CHANGED, initializeGamepadIcons)
     EVENT_MANAGER:RegisterForEvent(ADCUI.const.ADDON_NAME, EVENT_GAMEPAD_PREFERRED_MODE_CHANGED, onGamepadModeChanged)
@@ -61,7 +57,13 @@ function onGamepadModeChanged(eventCode, gamepadPreferred)
       EVENT_MANAGER:UnregisterForEvent(ADCUI.const.ADDON_NAME, EVENT_GAMEPAD_PREFERRED_MODE_CHANGED, onGamepadModeChanged)
       EVENT_MANAGER:RegisterForEvent(ADCUI.const.ADDON_NAME, EVENT_GAMEPAD_PREFERRED_MODE_CHANGED, initializeGamepadIcons)
       ADCUI:setGamepadPreferredModeOverrideState(false)
+      ADCUI.vars.shouldBlockOverrideRequests = true -- we need to make sure everything is initialized in gamepad mode before we call ADCUI:getGamepadIcons()
       ADCUI:cycleGamepadPreferredMode() -- next stop -> initializeGamepadIcons
+      return
+    elseif ADCUI:shouldUseGamepadActionBar() and not ADCUI.vars.isGamepadActionBarOverrideInitialized then
+      ADCUI:setGamepadActionBarOverrideState(true)
+      ADCUI.vars.isGamepadActionBarOverrideInitialized = true
+      ADCUI:cycleGamepadPreferredMode()
       return
     end
 
@@ -95,7 +97,7 @@ local function onLoad(event, addon)
     if ADCUI:shouldUseGamepadUI() then
       ADCUI:cycleGamepadPreferredMode() -- fix inconsistent state
     else
-      onGamepadModeChanged(0, true) -- let onGamepadModeChanged take care of grabbing the gamepad settings
+      onGamepadModeChanged(0, true) -- let onGamepadModeChanged take care of initialization into proper state
     end
   end
 
