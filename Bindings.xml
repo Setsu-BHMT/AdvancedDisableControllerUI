@@ -5,7 +5,11 @@
         <Down>SLASH_COMMANDS["/adcui"]()</Down>
       </Action>
       <Action name="ADCUI_USE_GAMEPAD">
-        <Down>toggleControllerUI()</Down>
+        <Down>
+          local settings = ADCUI:getSettings()
+          settings.useControllerUI = not settings.useControllerUI
+          ADCUI:cycleGamepadPreferredMode()
+        </Down>
       </Action>
     </Category>
   </Layer>
