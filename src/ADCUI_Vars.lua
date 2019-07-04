@@ -128,6 +128,7 @@ ADCUI.vars = {
   isGamepadKeysInitialized = false,
   isGamepadActionBarOverrideInitialized = false,
   shouldBlockOverrideRequests = false,  -- internal signaling for temporary use
+  backupActionButtonIcons = {}  -- used by gamepad action bar override
 }
 
 

@@ -4,12 +4,15 @@
 -- CHANGELOG:
 --    preliminary implementation for gamepad action bar override
 --      *keys still show keyboard mapping
+--    fixed broken key binding for toggling controller UI
 
 -- TODO:
 --    world map zooming...etc [worldmap.lua]
 
 -- BUGS:
 --    sprint is now a toggle
+--    center of screen alert causes gamepad mode to be set? sometimes
+--    map starts out off center
 
 if not ADCUI.isDefined then return end
 

@@ -82,6 +82,14 @@ function ADCUI:cycleGamepadPreferredMode()
   end
 end
 
+-- set a setting to a value and cycle, if no value is provided the setting is changed to its opposite state
+-- do not use this with useGamepadActionBar as it needs an extra function call
+function ADCUI:setSettingAndCycleGamepadPreferredMode(settingName, value)
+  local settings = ADCUI:getSettings(settingName)
+  settings[settingName] = (value ~= nil) and value or not settings[settingName]
+  ADCUI:cycleGamepadPreferredMode()
+end
+
 -- return whether default gamepad UI should be used
 function ADCUI:shouldUseGamepadUI()
   return getSettingHelper("useControllerUI") and ADCUI:originalIsInGamepadPreferredMode()

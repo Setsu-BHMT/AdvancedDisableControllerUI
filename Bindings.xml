@@ -5,7 +5,7 @@
         <Down>SLASH_COMMANDS["/adcui"]()</Down>
       </Action>
       <Action name="ADCUI_USE_GAMEPAD">
-        <Down>toggleControllerUI()</Down>
+        <Down>ADCUI:setSettingAndCycleGamepadPreferredMode("useControllerUI")</Down>
       </Action>
     </Category>
   </Layer>

@@ -8,6 +8,7 @@ if not ADCUI.isDefined then return end
 
 -- override ZO_Dialogs_ShowDialog to force gamepad buttons
 -- we do this by reverting our override function back to the original during dialog creation, then switching back after the call
+-- this seems to keep the keyboard dialog and just switch out the buttons to the gamepad ones
 local originalZOShowDialog = _G["ZO_Dialogs_ShowDialog"]
 local function myShowDialog(name, data, textParams, isGamepad)
   if not ADCUI:shouldUseGamepadButtons() then
@@ -21,6 +22,22 @@ local function myShowDialog(name, data, textParams, isGamepad)
   return dialog
 end
 _G["ZO_Dialogs_ShowDialog"] = myShowDialog
+
+
+-- [Quickslot Radial Manager]
+
+-- override QuickslotSlotRadialManager:StartInteraction() to force gamepad buttons
+-- except when using the gamepad UI this should always return the keyboard version
+local function myQuickslotSlotRadialManager_StartInteraction(self)
+  self.gamepad = ADCUI:shouldUseGamepadUI()
+
+  if self.gamepad then
+    QUICKSLOT_RADIAL_GAMEPAD:StartInteraction()
+  else
+    QUICKSLOT_RADIAL_KEYBOARD:StartInteraction()
+  end
+end
+QUICKSLOT_RADIAL_MANAGER["StartInteraction"] = myQuickslotSlotRadialManager_StartInteraction
 
 
 -- [Stall All Button Mapping]
@@ -238,7 +255,7 @@ local function onPowerUpdate(evt, unitTag, powerPoolIndex, powerType, ultimate, 
     return
   end
 
-  -- mirror code in ActionBar.SetUltimateMeter that only are affected by gamepad mode setting
+  -- mirror code in ActionBar.SetUltimateMeter that are only affected by gamepad mode setting
   local slotIndex = ACTION_BAR_ULTIMATE_SLOT_INDEX + 1
   local isSlotUsed = IsSlotUsed(slotIndex)
   local ultimateButton = ZO_ActionBar_GetButton(slotIndex)
@@ -266,6 +283,22 @@ local function onPowerUpdate(evt, unitTag, powerPoolIndex, powerType, ultimate, 
   ultimateButton:HideKeys(false)
 end
 
+local function onGamepadModeChanged_ActionBar(eventCode, gamepadPreferred)
+  if not gamepadPreferred then
+    return
+  end
+
+  -- use this handler to adjust settings after ActionBar:ApplyStyle()
+
+  local ultimateButton = ZO_ActionBar_GetButton(ACTION_BAR_ULTIMATE_SLOT_INDEX + 1)
+  ultimateButton:SetShowBindingText(false)
+
+  -- quickslot and action button texts
+  for control, text in pairs(ADCUI.vars.backupActionButtonIcons) do
+    control:SetText(text)
+  end
+end
+
 function ADCUI:setGamepadActionBarOverrideState(state)
   if state then
     PLAYER_ATTRIBUTE_BARS["OnGamepadPreferredModeChanged"] = myZO_PlayerAttributeBars_OnGamepadPreferredModeChanged
@@ -283,11 +316,12 @@ function ADCUI:setGamepadActionBarOverrideState(state)
     ActionButton["SetupBounceAnimation"] = myActionButton_SetupBounceAnimation
     ActionButton["PlayAbilityUsedBounce"] = myActionButton_PlayAbilityUsedBounce
 
-    EVENT_MANAGER:RegisterForEvent(ADCUI.const.ADDON_NAME, EVENT_ACTION_UPDATE_COOLDOWNS, onActionUpdateCooldowns)
-    EVENT_MANAGER:RegisterForEvent(ADCUI.const.ADDON_NAME, EVENT_ACTION_SLOT_STATE_UPDATED, onActionSlotStateUpdated)
-    EVENT_MANAGER:RegisterForEvent(ADCUI.const.ADDON_NAME, EVENT_ACTION_SLOT_ABILITY_USED, onActionSlotAbilityUsed)
-    EVENT_MANAGER:RegisterForEvent(ADCUI.const.ADDON_NAME, EVENT_POWER_UPDATE, onPowerUpdate)
-    EVENT_MANAGER:AddFilterForEvent(ADCUI.const.ADDON_NAME, EVENT_POWER_UPDATE, REGISTER_FILTER_POWER_TYPE, POWERTYPE_ULTIMATE, REGISTER_FILTER_UNIT_TAG, "player")
+    EVENT_MANAGER:RegisterForEvent(ADCUI.const.ADDON_NAME .. "_ActionBar", EVENT_ACTION_UPDATE_COOLDOWNS, onActionUpdateCooldowns)
+    EVENT_MANAGER:RegisterForEvent(ADCUI.const.ADDON_NAME .. "_ActionBar", EVENT_ACTION_SLOT_STATE_UPDATED, onActionSlotStateUpdated)
+    EVENT_MANAGER:RegisterForEvent(ADCUI.const.ADDON_NAME .. "_ActionBar", EVENT_ACTION_SLOT_ABILITY_USED, onActionSlotAbilityUsed)
+    EVENT_MANAGER:RegisterForEvent(ADCUI.const.ADDON_NAME .. "_ActionBar", EVENT_POWER_UPDATE, onPowerUpdate)
+    EVENT_MANAGER:AddFilterForEvent(ADCUI.const.ADDON_NAME .. "_ActionBar", EVENT_POWER_UPDATE, REGISTER_FILTER_POWER_TYPE, POWERTYPE_ULTIMATE, REGISTER_FILTER_UNIT_TAG, "player")
+    EVENT_MANAGER:RegisterForEvent(ADCUI.const.ADDON_NAME .. "_ActionBar", EVENT_GAMEPAD_PREFERRED_MODE_CHANGED, onGamepadModeChanged_ActionBar)
   else
     PLAYER_ATTRIBUTE_BARS["OnGamepadPreferredModeChanged"] = originalZO_PlayerAttributeBars_OnGamepadPreferredModeChanged
     ZO_PlatformStyle["Apply"] = originalZO_PlatformStyle_Apply
@@ -304,10 +338,11 @@ function ADCUI:setGamepadActionBarOverrideState(state)
     ActionButton["SetupBounceAnimation"] = originalActionButton_SetupBounceAnimation
     ActionButton["PlayAbilityUsedBounce"] = originalActionButton_PlayAbilityUsedBounce
 
-    EVENT_MANAGER:UnregisterForEvent(ADCUI.const.ADDON_NAME, EVENT_ACTION_UPDATE_COOLDOWNS)
-    EVENT_MANAGER:UnregisterForEvent(ADCUI.const.ADDON_NAME, EVENT_ACTION_SLOT_STATE_UPDATED)
-    EVENT_MANAGER:UnregisterForEvent(ADCUI.const.ADDON_NAME, EVENT_ACTION_SLOT_ABILITY_USED)
-    EVENT_MANAGER:UnregisterForEvent(ADCUI.const.ADDON_NAME, EVENT_POWER_UPDATE)
+    EVENT_MANAGER:UnregisterForEvent(ADCUI.const.ADDON_NAME .. "_ActionBar", EVENT_ACTION_UPDATE_COOLDOWNS)
+    EVENT_MANAGER:UnregisterForEvent(ADCUI.const.ADDON_NAME .. "_ActionBar", EVENT_ACTION_SLOT_STATE_UPDATED)
+    EVENT_MANAGER:UnregisterForEvent(ADCUI.const.ADDON_NAME .. "_ActionBar", EVENT_ACTION_SLOT_ABILITY_USED)
+    EVENT_MANAGER:UnregisterForEvent(ADCUI.const.ADDON_NAME .. "_ActionBar", EVENT_POWER_UPDATE)
+    EVENT_MANAGER:UnregisterForEvent(ADCUI.const.ADDON_NAME .. "_ActionBar", EVENT_GAMEPAD_PREFERRED_MODE_CHANGED)
 
     -- make sure that we are leaving the override in the correct state
     ADCUI:setGamepadPreferredModeOverrideState(true)

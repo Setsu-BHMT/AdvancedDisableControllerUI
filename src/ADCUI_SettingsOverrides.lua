@@ -16,14 +16,25 @@ function ADCUI:getGamepadIcons()
   for _, control in ipairs(self.const.CONTROLS_TO_BACKUP) do
     backupGamepadIcons[control] = control:GetText()
   end
+
+  -- quickslot button text
+  local button = ZO_ActionBar_GetButton(ACTION_BAR_FIRST_UTILITY_BAR_SLOT + 1)
+  ADCUI.vars.backupActionButtonIcons[button.buttonText] = button.buttonText:GetText()
+
+  -- action button texts
+  -- we ignore the last button, which is the ultimate button and has no text
+  for i = ACTION_BAR_FIRST_NORMAL_SLOT_INDEX + 1, ACTION_BAR_FIRST_NORMAL_SLOT_INDEX + ACTION_BAR_SLOTS_PER_PAGE - 1 do
+    button = ZO_ActionBar_GetButton(i)
+    ADCUI.vars.backupActionButtonIcons[button.buttonText] = button.buttonText:GetText()
+  end
   
   self.vars.isGamepadKeysInitialized = true
 end
 
 -- load the stored gamepad icons
 function ADCUI:setGamepadIcons()
-  for _, control in ipairs(self.const.CONTROLS_TO_BACKUP) do
-    control:SetText(backupGamepadIcons[control])
+  for control, text in pairs(backupGamepadIcons) do
+    control:SetText(text)
   end
 end
 
