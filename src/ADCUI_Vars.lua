@@ -129,10 +129,11 @@ ADCUI.vars = {
   isGamepadActionBarOverrideInitialized = false,
   shouldBlockOverrideRequests = false,  -- internal signaling for temporary use
   backupActionButtonIcons = {},  -- used by gamepad action bar override
-  isHudOrHudUIShowing = true,
 }
 
-ADCUI.debugLogger = LibDebugLogger("ADCUI")
+if LibDebugLogger then
+  ADCUI.debugLogger = LibDebugLogger("ADCUI")
+end
 
 
 ADCUI.isDefined = true

@@ -134,7 +134,6 @@ local function onUpdateVars()
 end
 
 
-
 -- [Register Event Handlers]
 
 EVENT_MANAGER:RegisterForEvent(ADCUI.const.ADDON_NAME, EVENT_ADD_ON_LOADED, onLoad)

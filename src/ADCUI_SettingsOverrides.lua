@@ -63,8 +63,10 @@ function ADCUI:setGamepadUISettings()
   -- adjust horizontal positioning of reticle labels since they're too far off to the right
   if not isReticleAdjusted then
     local _, point, relTo, relPoint, offsetX, offsetY = ZO_ReticleContainerInteractKeybindButtonKeyLabel:GetAnchor()
+    ZO_ReticleContainerInteractKeybindButtonKeyLabel:ClearAnchors()
     ZO_ReticleContainerInteractKeybindButtonKeyLabel:SetAnchor(point, relTo, relPoint, offsetX+5, offsetY)
     local _, point, relTo, relPoint, offsetX, offsetY = ZO_ReticleContainerInteractKeybindButtonNameLabel:GetAnchor()
+    ZO_ReticleContainerInteractKeybindButtonNameLabel:ClearAnchors()
     ZO_ReticleContainerInteractKeybindButtonNameLabel:SetAnchor(point, relTo, relPoint, offsetX-7, offsetY)
     isReticleAdjusted = true
   end
@@ -89,8 +91,10 @@ function ADCUI:setKeyboardUISettings()
   
   if isReticleAdjusted then
     local _, point, relTo, relPoint, offsetX, offsetY = ZO_ReticleContainerInteractKeybindButtonKeyLabel:GetAnchor()
+    ZO_ReticleContainerInteractKeybindButtonKeyLabel:ClearAnchors()
     ZO_ReticleContainerInteractKeybindButtonKeyLabel:SetAnchor(point, relTo, relPoint, offsetX-5, offsetY)
     local _, point, relTo, relPoint, offsetX, offsetY = ZO_ReticleContainerInteractKeybindButtonNameLabel:GetAnchor()
+    ZO_ReticleContainerInteractKeybindButtonNameLabel:ClearAnchors()
     ZO_ReticleContainerInteractKeybindButtonNameLabel:SetAnchor(point, relTo, relPoint, offsetX+7, offsetY)
     isReticleAdjusted = false
   end

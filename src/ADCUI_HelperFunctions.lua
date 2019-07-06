@@ -36,9 +36,6 @@ end
 
 -- enable or disable override of IsInGamepadPreferredMode
 local function myIsInGamepadPreferredMode()
-  --DEBUG: find out who called us
-  --d(debug.traceback())
-
   local isInGamepadMode = ADCUI:originalIsInGamepadPreferredMode()
 
   if getSettingHelper("useControllerUI") then
@@ -47,18 +44,7 @@ local function myIsInGamepadPreferredMode()
     return isInGamepadMode and ADCUI.vars.isLockpicking
   end
 end
-local shouldRunDelayedCall = false
-function ADCUI:setGamepadPreferredModeOverrideState(state, callerName)
-  -- DEBUG
-  if callerName then
-    if state then
-      ADCUI.debugLogger:Debug("Caller: " .. callerName .. "   set enabled")
-    else
-      ADCUI.debugLogger:Debug("Caller: " .. callerName .. "   set disabled")
-    end
-  end
-
-  shouldRunDelayedCall = false
+function ADCUI:setGamepadPreferredModeOverrideState(state)
   if ADCUI.vars.shouldBlockOverrideRequests then
     -- do nothing, requests blocked
   elseif state then
@@ -66,20 +52,6 @@ function ADCUI:setGamepadPreferredModeOverrideState(state, callerName)
   else
     _G["IsInGamepadPreferredMode"] = originalIsInGamepadPreferredMode
   end
-end
-
-ADCUI.debugPtr = myIsInGamepadPreferredMode
-
--- delayed set of gamepad preferred mode
--- will not run the call if ADCUI:setGamepadPreferredModeOverrideState() has been called during the delayed
--- used by the action bar override function
-function ADCUI:setGamepadPreferredModeOverrideStateDelayed(state, delayTime, callerName)
-  shouldRunDelayedCall = true
-  zo_callLater(function() 
-      if shouldRunDelayedCall then 
-        ADCUI:setGamepadPreferredModeOverrideState(state, callerName)
-      end
-    end, delayTime)
 end
 
 -- switch the gamepad enabled state twice, because some UI elements grab the state before we can properly do an update

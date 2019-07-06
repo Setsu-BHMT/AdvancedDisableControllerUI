@@ -1,6 +1,6 @@
 ﻿<GuiXml>
   <Controls>
-    <TopLevelControl name="ADCUI_debug">
+    <!--<TopLevelControl name="ADCUI_debug">
       <Dimensions x="200" y="25" />
       <Anchor point="BOTTOM" relativeTo="GuiRoot" relativePoint="LEFT" />
 
@@ -10,6 +10,6 @@
           <Anchor point="TOP" relativeTo="$(parent)" relativePoint="TOP" />
         </Label>
       </Controls>
-    </TopLevelControl>
+    </TopLevelControl>-->
   </Controls>
 </GuiXml>
