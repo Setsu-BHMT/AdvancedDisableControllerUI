@@ -4,7 +4,9 @@
 
 -- keybinds
 ZO_CreateStringId("SI_BINDING_NAME_ADCUI_ACTIVATE", "Menü anzeigen")
-ZO_CreateStringId("SI_BINDING_NAME_ADCUI_USE_GAMEPAD", "Verwenden Controller UI")
+ZO_CreateStringId("SI_BINDING_NAME_USE_CONTROLLER_UI", "Verwenden Controller UI")
+ZO_CreateStringId("SI_BINDING_NAME_USE_GAMEPAD_BUTTONS", "Verwenden Gamepad-Schaltflächensymbole")
+ZO_CreateStringId("SI_BINDING_NAME_USE_GAMEPAD_ACTION_BAR", "Verwenden Gamepad-Aktionsleiste")
 
 
 -- Description
@@ -21,11 +23,11 @@ ZO_CreateStringId("ADCUI_ACCOUNT_WIDE_SETTINGS_TOOLTIP", "Wechsel zwischen Chara
 ZO_CreateStringId("ADCUI_USE_CONTROLLER_UI", "Verwenden Controller UI")
 
 -- Use gamepad button icons
-ZO_CreateStringId("ADCUI_USE_GAMEPAD_BUTTONS", "Verwenden Sie Gamepad-Schaltflächensymbole")
+ZO_CreateStringId("ADCUI_USE_GAMEPAD_BUTTONS", "Verwenden Gamepad-Schaltflächensymbole")
 ZO_CreateStringId("ADCUI_USE_GAMEPAD_BUTTONS_TOOLTIP", "Ersetzt Tastatursymbole durch Gamepad-Symbole")
 
 -- Use gamepad action bar
-ZO_CreateStringId("ADCUI_USE_GAMEPAD_ACTION_BAR", "Verwenden Sie die Gamepad-Aktionsleiste")
+ZO_CreateStringId("ADCUI_USE_GAMEPAD_ACTION_BAR", "Verwenden Gamepad-Aktionsleiste")
 ZO_CreateStringId("ADCUI_USE_GAMEPAD_ACTION_BAR_TOOLTIP", "Verwendet Gamepad-Fähigkeiten und Ressourcenleisten")
 
 -- Compass header

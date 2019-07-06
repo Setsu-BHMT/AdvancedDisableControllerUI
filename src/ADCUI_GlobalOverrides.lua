@@ -88,9 +88,9 @@ local function myZO_PlayerAttributeBars_OnGamepadPreferredModeChanged(self)
     return originalZO_PlayerAttributeBars_OnGamepadPreferredModeChanged(self)
   end
 
-  ADCUI:setGamepadPreferredModeOverrideState(false)
+  ADCUI:setGamepadPreferredModeOverrideState(false, "myZO_PlayerAttributeBars_OnGamepadPreferredModeChanged")
   originalZO_PlayerAttributeBars_OnGamepadPreferredModeChanged(self)
-  ADCUI:setGamepadPreferredModeOverrideState(true)
+  ADCUI:setGamepadPreferredModeOverrideState(true, "myZO_PlayerAttributeBars_OnGamepadPreferredModeChanged")
 end
 
 
@@ -103,9 +103,9 @@ local function myZO_PlatformStyle_Apply(self)
     return originalZO_PlatformStyle_Apply(self)
   end
 
-  ADCUI:setGamepadPreferredModeOverrideState(false)
+  ADCUI:setGamepadPreferredModeOverrideState(false, "myZO_PlatformStyle_Apply")
   self.applyFunction(self.gamepadStyle)
-  ADCUI:setGamepadPreferredModeOverrideState(true)
+  ADCUI:setGamepadPreferredModeOverrideState(true, "myZO_PlatformStyle_Apply")
 end
 
 -- override ZO_GetPlatformTemplate but only for calls from ActionButton
@@ -123,7 +123,10 @@ end
 -- luckily this is only called once and some other call will re-enable the override
 local originalZO_WeaponsSwap_SetPermanentlyHidden = _G["ZO_WeaponSwap_SetPermanentlyHidden"]
 local function myZO_WeaponsSwap_SetPermanentlyHidden(self, hidden)
-  ADCUI:setGamepadPreferredModeOverrideState(false)
+  if not ADCUI.vars.isHudOrHudUIShowing then
+    return originalZO_WeaponsSwap_SetPermanentlyHidden(self, hidden)
+  end
+  ADCUI:setGamepadPreferredModeOverrideState(false, "myZO_WeaponsSwap_SetPermanentlyHidden")
   originalZO_WeaponsSwap_SetPermanentlyHidden(self, hidden)
 end
 
@@ -131,15 +134,21 @@ end
 -- called when ability button is pressed
 local originalActionButton_ResetVisualState = ActionButton["ResetVisualState"]
 local function myActionButton_ResetVisualState(self)
-  ADCUI:setGamepadPreferredModeOverrideState(false)
+  if not ADCUI.vars.isHudOrHudUIShowing then
+    return originalActionButton_ResetVisualState(self)
+  end
+  ADCUI:setGamepadPreferredModeOverrideState(false, "myActionButton_ResetVisualState")
   originalActionButton_ResetVisualState(self)
-  --ADCUI:setGamepadPreferredModeOverrideState(true)  -- seems OK to ignore for now
+  --ADCUI:setGamepadPreferredModeOverrideState(true)  -- if ran removes ultimate LB/RB and action bounce
 end
 
 --first thing that gets called when a button is created
 local originalActionButton_HandleSlotChanged = ActionButton["HandleSlotChanged"]
 local function myActionButton_HandleSlotChanged(self)
-  ADCUI:setGamepadPreferredModeOverrideState(false)
+  if not ADCUI.vars.isHudOrHudUIShowing then
+    return originalActionButton_HandleSlotChanged(self)
+  end
+  ADCUI:setGamepadPreferredModeOverrideState(false, "myActionButton_HandleSlotChanged")
   originalActionButton_HandleSlotChanged(self)
   --ADCUI:setGamepadPreferredModeOverrideState(true)  -- let this leak, so ultimate button animation plays correctly
 end
@@ -147,49 +156,56 @@ end
 -- called when a slot is being removed
 local originalActionButton_Clear = ActionButton["Clear"]
 local function myActionButton_Clear(self)
-  if not ADCUI:originalIsInGamepadPreferredMode() then
+  if not ADCUI:originalIsInGamepadPreferredMode() or not ADCUI.vars.isHudOrHudUIShowing then
     return originalActionButton_Clear(self)
   end
 
-  ADCUI:setGamepadPreferredModeOverrideState(false)
+  ADCUI:setGamepadPreferredModeOverrideState(false, "myActionButton_Clear")
   originalActionButton_Clear(self)
-  ADCUI:setGamepadPreferredModeOverrideState(true)
+  ADCUI:setGamepadPreferredModeOverrideState(true, "myActionButton_Clear")
 end
+
+local originalActionButton_UpdateState = ActionButton["UpdateState"]  --DEBUG
+local function myActionButton_UpdateState(self)
+  originalActionButton_UpdateState(self)  -- if ran fixes easy travel error but removes ultimate fill bar, LB/RB, action button bounce
+  ADCUI:setGamepadPreferredModeOverrideState(true, "myActionButton_UpdateState")
+end
+ActionButton["UpdateState"] = myActionButton_UpdateState
 
 local originalActionButton_SetCooldownIconAnchors = ActionButton["SetCooldownIconAnchors"]
 local function myActionButton_SetCooldownIconAnchors(self, inCooldown)
-  if not ADCUI:originalIsInGamepadPreferredMode() then
+  if not ADCUI:originalIsInGamepadPreferredMode() or not ADCUI.vars.isHudOrHudUIShowing then
     return originalActionButton_SetCooldownIconAnchors(self, inCooldown)
   end
 
-  ADCUI:setGamepadPreferredModeOverrideState(false)
+  ADCUI:setGamepadPreferredModeOverrideState(false, "myActionButton_SetCooldownIconAnchors")
   originalActionButton_SetCooldownIconAnchors(self, inCooldown)
-  ADCUI:setGamepadPreferredModeOverrideState(true)    -- need this so that after switching quickslot we end in override state
+  ADCUI:setGamepadPreferredModeOverrideState(true, "myActionButton_SetCooldownIconAnchors")    -- need this so that after switching quickslot we end in override state
 end
 
 -- runs continuously during cooldown such as after using a collectible item
 -- maintains our override during the cooldown period
 local originalActionButton_RefreshCooldown = ActionButton["RefreshCooldown"]
 local function myActionButton_RefreshCooldown(self)
-  if not ADCUI:originalIsInGamepadPreferredMode() then
+  if not ADCUI:originalIsInGamepadPreferredMode() or not ADCUI.vars.isHudOrHudUIShowing then
     return originalActionButton_RefreshCooldown(self)
   end
 
-  ADCUI:setGamepadPreferredModeOverrideState(false)
+  ADCUI:setGamepadPreferredModeOverrideState(false, "myActionButton_RefreshCooldown")
   originalActionButton_RefreshCooldown(self)
-  ADCUI:setGamepadPreferredModeOverrideState(true)
+  ADCUI:setGamepadPreferredModeOverrideState(true, "myActionButton_RefreshCooldown")
 end
 
 -- last call after action is used
 local originalActionButton_UpdateCooldown = ActionButton["UpdateCooldown"]
 local function myActionButton_UpdateCooldown(self, options)
-  if not ADCUI:originalIsInGamepadPreferredMode() then
+  if not ADCUI:originalIsInGamepadPreferredMode() or not ADCUI.vars.isHudOrHudUIShowing then
     return originalActionButton_UpdateCooldown(self, options)
   end
 
-  ADCUI:setGamepadPreferredModeOverrideState(false)
+  ADCUI:setGamepadPreferredModeOverrideState(false, "myActionButton_UpdateCooldown")
   originalActionButton_UpdateCooldown(self, options)
-  ADCUI:setGamepadPreferredModeOverrideState(false) -- need this so that ultimate squeeze animation and highlight work after reloadui
+  --ADCUI:setGamepadPreferredModeOverrideState(false, "myActionButton_UpdateCooldown") -- maybe? need this so that ultimate squeeze animation and highlight work after reloadui
   if (self.slot.slotNum == ACTION_BAR_ULTIMATE_SLOT_INDEX + 1) then
     self.button:SetHidden(true)
   end
@@ -198,40 +214,57 @@ end
 -- last call after button load/initializes/gamepad change
 local originalActionButton_ApplyStyle = ActionButton["ApplyStyle"]  
 local function myActionButton_ApplyStyle(self, template)
-  if not ADCUI:originalIsInGamepadPreferredMode() then
+  if not ADCUI:originalIsInGamepadPreferredMode() or not ADCUI.vars.isHudOrHudUIShowing then
     return originalActionButton_ApplyStyle(self, template)
   end
 
-  ADCUI:setGamepadPreferredModeOverrideState(false)
+  ADCUI:setGamepadPreferredModeOverrideState(false, "myActionButton_ApplyStyle")
   originalActionButton_ApplyStyle(self, template)
-  ADCUI:setGamepadPreferredModeOverrideState(true)
+  ADCUI:setGamepadPreferredModeOverrideState(true, "myActionButton_ApplyStyle")
 end
 
 local originalActionButton_SetupFlipAnimation = ActionButton["SetupFlipAnimation"]
 local function myActionButton_SetupFlipAnimation(self, OnStopHandlerFirst, OnStopHandlerLast)
-  ADCUI:setGamepadPreferredModeOverrideState(false)
+  if not ADCUI.vars.isHudOrHudUIShowing then
+    return originalActionButton_SetupFlipAnimation(self, OnStopHandlerFirst, OnStopHandlerLast)
+  end
+  ADCUI:setGamepadPreferredModeOverrideState(false, "myActionButton_SetupFlipAnimation")
   originalActionButton_SetupFlipAnimation(self, OnStopHandlerFirst, OnStopHandlerLast)
-  --ADCUI:setGamepadPreferredModeOverrideState(true)  -- seems OK to ignore for now
+  ADCUI:setGamepadPreferredModeOverrideState(true, "myActionButton_SetupFlipAnimation")  -- try this and see if it's necessary to fix a leak override
 end
 
 local originalActionButton_SetupBounceAnimation = ActionButton["SetupBounceAnimation"]
 local function myActionButton_SetupBounceAnimation(self)
-  ADCUI:setGamepadPreferredModeOverrideState(false)
+  if not ADCUI.vars.isHudOrHudUIShowing then
+    return originalActionButton_SetupBounceAnimation(self)
+  end
+  ADCUI:setGamepadPreferredModeOverrideState(false, "myActionButton_SetupBounceAnimation")
   originalActionButton_SetupBounceAnimation(self)
   --ADCUI:setGamepadPreferredModeOverrideState(true)  -- if set then the ultimate animation setup will be in the wrong mode
 end
 
 local originalActionButton_PlayAbilityUsedBounce = ActionButton["PlayAbilityUsedBounce"]
 local function myActionButton_PlayAbilityUsedBounce(self, offset)
-  ADCUI:setGamepadPreferredModeOverrideState(false)
+  if not ADCUI.vars.isHudOrHudUIShowing then
+    return originalActionButton_PlayAbilityUsedBounce(self, offset)
+  end
+  ADCUI:setGamepadPreferredModeOverrideState(false, "myActionButton_PlayAbilityUsedBounce")
   originalActionButton_PlayAbilityUsedBounce(self, offset)
   --ADCUI:setGamepadPreferredModeOverrideState(true)  -- seems OK to ignore for now
 end
 
+local originalActionButton_HideKeys = ActionButton["HideKeys"]
+local function myActionButton_HideKeys(self)
+  -- we override ZO_WeaponSwap_SetPermanentlyHidden to have the override disabled for the ultimate button activation
+  -- but we need to turn it back on, and while this function doesn't have gamepad-specific code it allows us to reset the override
+  if ADCUI:originalIsInGamepadPreferredMode() then
+    --ADCUI:setGamepadPreferredModeOverrideState(true)  -- if set to true screws with squeeze
+  end
+end
 
 local function onActionUpdateCooldowns()
   if ADCUI:originalIsInGamepadPreferredMode() then
-    ADCUI:setGamepadPreferredModeOverrideState(true)
+    ADCUI:setGamepadPreferredModeOverrideState(true, "onActionUpdateCooldowns")
   end
 end
 
@@ -240,22 +273,21 @@ local function onActionSlotStateUpdated()
   -- but we need to do this so that after the reticle swings by a targetable object we aren't stuck in gamepad mode
   -- so we use this hack to just take care of that one situation without breaking the animations
   if ADCUI:originalIsInGamepadPreferredMode() then
-    ADCUI:setGamepadPreferredModeOverrideStateDelayed(true, 50)
+    ADCUI:setGamepadPreferredModeOverrideStateDelayed(true, 50, "onActionSlotStateUpdated")
   end
 end
 
 local function onActionSlotAbilityUsed()
   if ADCUI:originalIsInGamepadPreferredMode() then
-    ADCUI:setGamepadPreferredModeOverrideState(true)
+    ADCUI:setGamepadPreferredModeOverrideState(true, "onActionSlotAbilityUsed")
   end
 end
 
+-- mirror code in ActionBar.SetUltimateMeter that are only affected by gamepad mode setting
 local function onPowerUpdate(evt, unitTag, powerPoolIndex, powerType, ultimate, powerPoolMax)
-  if not ADCUI:originalIsInGamepadPreferredMode() then
+  if not ADCUI:originalIsInGamepadPreferredMode() or not ADCUI.vars.isHudOrHudUIShowing then
     return
   end
-
-  -- mirror code in ActionBar.SetUltimateMeter that are only affected by gamepad mode setting
   local slotIndex = ACTION_BAR_ULTIMATE_SLOT_INDEX + 1
   local isSlotUsed = IsSlotUsed(slotIndex)
   local ultimateButton = ZO_ActionBar_GetButton(slotIndex)
@@ -283,12 +315,12 @@ local function onPowerUpdate(evt, unitTag, powerPoolIndex, powerType, ultimate, 
   ultimateButton:HideKeys(false)
 end
 
+-- adjust settings after ActionBar:ApplyStyle()
 local function onGamepadModeChanged_ActionBar(eventCode, gamepadPreferred)
   if not gamepadPreferred then
     return
   end
 
-  -- use this handler to adjust settings after ActionBar:ApplyStyle()
 
   local ultimateButton = ZO_ActionBar_GetButton(ACTION_BAR_ULTIMATE_SLOT_INDEX + 1)
   ultimateButton:SetShowBindingText(false)
@@ -296,6 +328,27 @@ local function onGamepadModeChanged_ActionBar(eventCode, gamepadPreferred)
   -- quickslot and action button texts
   for control, text in pairs(ADCUI.vars.backupActionButtonIcons) do
     control:SetText(text)
+  end
+end
+
+-- player deactivated means loading screen is starting
+local function onPlayerDeactivated()
+  --ADCUI:setGamepadPreferredModeOverrideState(true) --doesn't work
+end
+
+-- disable all action bar related overrides when not in hudui or hud scene
+-- otherwise interactions in the scene cause very undesirable behavior, like getting stuck in gamepad mode
+local function onSceneStateChanged_ActionBar(scene, oldState, newState)
+  if not ADCUI:originalIsInGamepadPreferredMode() or not scene or (newState == SCENE_SHOWN) or (newState == SCENE_HIDDEN) then
+    return
+  end
+
+  ADCUI:setGamepadPreferredModeOverrideState(true)
+  ADCUI.vars.isHudOrHudUIShowing = false
+
+  if newState == SCENE_SHOWING then
+    local name = scene:GetName()
+    ADCUI.vars.isHudOrHudUIShowing = (name == HUD_SCENE:GetName()) or (name == HUD_UI_SCENE:GetName())
   end
 end
 
@@ -315,6 +368,7 @@ function ADCUI:setGamepadActionBarOverrideState(state)
     ActionButton["SetupFlipAnimation"] = myActionButton_SetupFlipAnimation
     ActionButton["SetupBounceAnimation"] = myActionButton_SetupBounceAnimation
     ActionButton["PlayAbilityUsedBounce"] = myActionButton_PlayAbilityUsedBounce
+    ActionButton["HideKeys"] = myActionButton_HideKeys
 
     EVENT_MANAGER:RegisterForEvent(ADCUI.const.ADDON_NAME .. "_ActionBar", EVENT_ACTION_UPDATE_COOLDOWNS, onActionUpdateCooldowns)
     EVENT_MANAGER:RegisterForEvent(ADCUI.const.ADDON_NAME .. "_ActionBar", EVENT_ACTION_SLOT_STATE_UPDATED, onActionSlotStateUpdated)
@@ -322,6 +376,10 @@ function ADCUI:setGamepadActionBarOverrideState(state)
     EVENT_MANAGER:RegisterForEvent(ADCUI.const.ADDON_NAME .. "_ActionBar", EVENT_POWER_UPDATE, onPowerUpdate)
     EVENT_MANAGER:AddFilterForEvent(ADCUI.const.ADDON_NAME .. "_ActionBar", EVENT_POWER_UPDATE, REGISTER_FILTER_POWER_TYPE, POWERTYPE_ULTIMATE, REGISTER_FILTER_UNIT_TAG, "player")
     EVENT_MANAGER:RegisterForEvent(ADCUI.const.ADDON_NAME .. "_ActionBar", EVENT_GAMEPAD_PREFERRED_MODE_CHANGED, onGamepadModeChanged_ActionBar)
+    EVENT_MANAGER:RegisterForEvent(ADCUI.const.ADDON_NAME .. "_ActionBar", EVENT_PLAYER_ACTIVATED, onPlayerDeactivated)
+    SCENE_MANAGER:RegisterCallback("SceneStateChanged", onSceneStateChanged_ActionBar)
+
+    ADCUI.vars.isHudOrHudUIShowing = SCENE_MANAGER:IsShowing(HUD_SCENE:GetName()) or SCENE_MANAGER:IsShowing(HUD_UI_SCENE:GetName())
   else
     PLAYER_ATTRIBUTE_BARS["OnGamepadPreferredModeChanged"] = originalZO_PlayerAttributeBars_OnGamepadPreferredModeChanged
     ZO_PlatformStyle["Apply"] = originalZO_PlatformStyle_Apply
@@ -337,12 +395,15 @@ function ADCUI:setGamepadActionBarOverrideState(state)
     ActionButton["SetupFlipAnimation"] = originalActionButton_SetupFlipAnimation
     ActionButton["SetupBounceAnimation"] = originalActionButton_SetupBounceAnimation
     ActionButton["PlayAbilityUsedBounce"] = originalActionButton_PlayAbilityUsedBounce
+    ActionButton["HideKeys"] = originalActionButton_HideKeys
 
     EVENT_MANAGER:UnregisterForEvent(ADCUI.const.ADDON_NAME .. "_ActionBar", EVENT_ACTION_UPDATE_COOLDOWNS)
     EVENT_MANAGER:UnregisterForEvent(ADCUI.const.ADDON_NAME .. "_ActionBar", EVENT_ACTION_SLOT_STATE_UPDATED)
     EVENT_MANAGER:UnregisterForEvent(ADCUI.const.ADDON_NAME .. "_ActionBar", EVENT_ACTION_SLOT_ABILITY_USED)
     EVENT_MANAGER:UnregisterForEvent(ADCUI.const.ADDON_NAME .. "_ActionBar", EVENT_POWER_UPDATE)
     EVENT_MANAGER:UnregisterForEvent(ADCUI.const.ADDON_NAME .. "_ActionBar", EVENT_GAMEPAD_PREFERRED_MODE_CHANGED)
+    EVENT_MANAGER:UnregisterForEvent(ADCUI.const.ADDON_NAME .. "_ActionBar", EVENT_PLAYER_ACTIVATED)
+    SCENE_MANAGER:UnregisterCallback("SceneStateChanged", onSceneStateChanged_ActionBar)
 
     -- make sure that we are leaving the override in the correct state
     ADCUI:setGamepadPreferredModeOverrideState(true)

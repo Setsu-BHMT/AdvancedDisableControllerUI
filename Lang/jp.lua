@@ -4,7 +4,9 @@
 
 -- keybinds
 ZO_CreateStringId("SI_BINDING_NAME_ADCUI_ACTIVATE", "設定画面の表示")
-ZO_CreateStringId("SI_BINDING_NAME_ADCUI_USE_GAMEPAD", "コントローラUIを使用する")
+ZO_CreateStringId("SI_BINDING_NAME_USE_CONTROLLER_UI", "コントローラUIを使う")
+ZO_CreateStringId("SI_BINDING_NAME_USE_GAMEPAD_BUTTONS", "コントローラボタンアイコンを使う")
+ZO_CreateStringId("SI_BINDING_NAME_USE_GAMEPAD_ACTION_BAR", "コントローラアクションバーを使う")
 
 
 -- Description
@@ -14,11 +16,11 @@ ZO_CreateStringId("ADCUI_DESCRIPTION", "ゲームコントローラUIを無効�
 ZO_CreateStringId("ADCUI_GENERAL_SETTINGS_HEADER", "一般設定")
 
 -- Account/character wide settings
-ZO_CreateStringId("ADCUI_ACCOUNT_WIDE_SETTINGS", "アカウント全体の設定を使用する")
+ZO_CreateStringId("ADCUI_ACCOUNT_WIDE_SETTINGS", "アカウント全体の設定を使う")
 ZO_CreateStringId("ADCUI_ACCOUNT_WIDE_SETTINGS_TOOLTIP", "設定をキャラクターかアカウント全体かに変更する")
 
 -- disable addon
-ZO_CreateStringId("ADCUI_USE_CONTROLLER_UI", "コントローラUIを使用する")
+ZO_CreateStringId("ADCUI_USE_CONTROLLER_UI", "コントローラUIを使う")
 
 -- Use gamepad button icons
 ZO_CreateStringId("ADCUI_USE_GAMEPAD_BUTTONS", "コントローラボタンアイコンを使う")

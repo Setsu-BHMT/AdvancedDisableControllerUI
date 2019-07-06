@@ -53,7 +53,9 @@ function LoadLAM2Panel()
         end,
       setFunc = 
         function(value) 
-          ADCUI:setSettingAndCycleGamepadPreferredMode("useControllerUI", value)
+          local settings = ADCUI:getSettings()
+          settings.useControllerUI = value
+          ADCUI:cycleGamepadPreferredMode()
         end,
     },
     { -- Use Gamepad Buttons
@@ -73,7 +75,9 @@ function LoadLAM2Panel()
         end,
       setFunc = 
         function(value) 
-          ADCUI:setSettingAndCycleGamepadPreferredMode("useGamepadButtons", value)
+          local settings = ADCUI:getSettings()
+          settings.useGamepadButtons = value
+          ADCUI:cycleGamepadPreferredMode()
         end,
     },
     { -- Use Gamepad Action Bar

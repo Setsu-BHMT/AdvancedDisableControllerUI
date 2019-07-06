@@ -3,6 +3,18 @@
 
 if not ADCUI.isDefined then return end
 
+-- override indicator
+local function UpdateDebugIndicator()
+  ADCUI_debug:ClearAnchors()
+  if _G["IsInGamepadPreferredMode"] == ADCUI.debugPtr then
+    ADCUI_debugLabel:SetText("ON")
+    ADCUI_debug:SetAnchor(BOTTOM, GuiRoot, LEFT, 20, -100)
+  else
+    ADCUI_debugLabel:SetText("OFF")
+    ADCUI_debug:SetAnchor(BOTTOM, GuiRoot, LEFT, 20, 100)
+  end
+end
+EVENT_MANAGER:RegisterForUpdate(ADCUI.const.ADDON_NAME .. "_debug", 50, UpdateDebugIndicator)
 
 -- slash command
 --  local function foo()
@@ -10,18 +22,20 @@ if not ADCUI.isDefined then return end
 --  end
 --  SLASH_COMMANDS["/foo"] = foo
 
--- -- hook the SCENE_MANAGER so that we know when interested scenes are shown
--- ZO_PreHook(SCENE_MANAGER, "OnSceneStateChange", function(self, scene, oldstate, newstate)
-  -- if not scene or not scene.GetName then
-    -- return
-  -- end
+-- Show scene changes and what it's changing to
+SCENE_MANAGER:RegisterCallback("SceneStateChanged", function(scene, oldstate, newstate)
+  if not scene then return end
   
-  -- local sceneName = scene:GetName()
-  
-  -- if sceneName then
-    -- d(sceneName .. ": " .. oldstate .. " -> " .. newstate)
-  -- end
--- end)
+  local sceneName = scene:GetName()
+
+  local nextScene = SCENE_MANAGER:GetNextScene()
+
+  if (nextScene) then
+    ADCUI.debugLogger:Debug(sceneName .. " -> " .. newstate .. "  NEXT: " .. nextScene:GetName())
+  else
+    ADCUI.debugLogger:Debug(sceneName .. " -> " .. newstate)
+  end
+end)
 
 -- -- add keybind hooks
 -- ZO_PreHook(SCENE_MANAGER, "OnSceneStateShown", function(self, scene)

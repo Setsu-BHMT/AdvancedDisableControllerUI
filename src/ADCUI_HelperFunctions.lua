@@ -48,7 +48,16 @@ local function myIsInGamepadPreferredMode()
   end
 end
 local shouldRunDelayedCall = false
-function ADCUI:setGamepadPreferredModeOverrideState(state)
+function ADCUI:setGamepadPreferredModeOverrideState(state, callerName)
+  -- DEBUG
+  if callerName then
+    if state then
+      ADCUI.debugLogger:Debug("Caller: " .. callerName .. "   set enabled")
+    else
+      ADCUI.debugLogger:Debug("Caller: " .. callerName .. "   set disabled")
+    end
+  end
+
   shouldRunDelayedCall = false
   if ADCUI.vars.shouldBlockOverrideRequests then
     -- do nothing, requests blocked
@@ -59,14 +68,16 @@ function ADCUI:setGamepadPreferredModeOverrideState(state)
   end
 end
 
+ADCUI.debugPtr = myIsInGamepadPreferredMode
+
 -- delayed set of gamepad preferred mode
 -- will not run the call if ADCUI:setGamepadPreferredModeOverrideState() has been called during the delayed
 -- used by the action bar override function
-function ADCUI:setGamepadPreferredModeOverrideStateDelayed(state, delayTime)
+function ADCUI:setGamepadPreferredModeOverrideStateDelayed(state, delayTime, callerName)
   shouldRunDelayedCall = true
   zo_callLater(function() 
       if shouldRunDelayedCall then 
-        ADCUI:setGamepadPreferredModeOverrideState(state)
+        ADCUI:setGamepadPreferredModeOverrideState(state, callerName)
       end
     end, delayTime)
 end
@@ -80,14 +91,6 @@ function ADCUI:cycleGamepadPreferredMode()
     SetSetting(SETTING_TYPE_GAMEPAD, GAMEPAD_SETTING_GAMEPAD_PREFERRED, "true")
     SetSetting(SETTING_TYPE_GAMEPAD, GAMEPAD_SETTING_GAMEPAD_PREFERRED, "false")
   end
-end
-
--- set a setting to a value and cycle, if no value is provided the setting is changed to its opposite state
--- do not use this with useGamepadActionBar as it needs an extra function call
-function ADCUI:setSettingAndCycleGamepadPreferredMode(settingName, value)
-  local settings = ADCUI:getSettings(settingName)
-  settings[settingName] = (value ~= nil) and value or not settings[settingName]
-  ADCUI:cycleGamepadPreferredMode()
 end
 
 -- return whether default gamepad UI should be used

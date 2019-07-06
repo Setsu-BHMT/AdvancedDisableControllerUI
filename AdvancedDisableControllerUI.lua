@@ -4,15 +4,18 @@
 -- CHANGELOG:
 --    preliminary implementation for gamepad action bar override
 --      *keys still show keyboard mapping
---    fixed broken key binding for toggling controller UI
+--    added keybinds for gamepad buttons and action bar
 
 -- TODO:
 --    world map zooming...etc [worldmap.lua]
 
 -- BUGS:
 --    sprint is now a toggle
---    center of screen alert causes gamepad mode to be set? sometimes
---    map starts out off center
+--    map starts off center sometimes
+--    fast traveling with easy travel sets quest tracker to offscreen
+--    dungeon tracker is offscreen
+--    many ui elements will get stuck in gamepad mode
+
 
 if not ADCUI.isDefined then return end
 

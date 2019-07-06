@@ -3,8 +3,11 @@
 -- English specific file
 
 -- keybinds
-ZO_CreateStringId("SI_BINDING_NAME_ADCUI_ACTIVATE", "Show Menu")
-ZO_CreateStringId("SI_BINDING_NAME_ADCUI_USE_GAMEPAD", "Use Default UI In Gamepad Mode")
+ZO_CreateStringId("SI_BINDING_NAME_ADCUI_DEBUG", "ReloadUI")
+ZO_CreateStringId("SI_BINDING_NAME_ADCUI_ACTIVATE", "Show Settings")
+ZO_CreateStringId("SI_BINDING_NAME_USE_CONTROLLER_UI", "Use Default UI In Gamepad Mode")
+ZO_CreateStringId("SI_BINDING_NAME_USE_GAMEPAD_BUTTONS", "Use Gamepad Button Icons")
+ZO_CreateStringId("SI_BINDING_NAME_USE_GAMEPAD_ACTION_BAR", "Use Gamepad Action Bar")
 
 
 -- Description
