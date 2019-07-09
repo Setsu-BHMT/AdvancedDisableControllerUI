@@ -80,6 +80,24 @@ ZO_PreHook(KEYBIND_STRIP, "AddKeybindButtonGroup", onAddOrUpdateKeybindButtonGro
 ZO_PreHook(KEYBIND_STRIP, "UpdateKeybindButtonGroup", onAddOrUpdateKeybindButtonGroup)
 
 
+-- [World Map]
+
+-- reset the map view to keyboard default instead of centering on player
+ZO_WorldMapManager:RegisterCallback("Showing", function()
+  local map = ZO_WorldMap_GetPanAndZoom()
+  map:AddTargetOffsetDelta(0, 0)
+end)
+
+-- this fixes the first time map is opened
+WORLD_MAP_SCENE:RegisterCallback("StateChange", function(oldState, newState)
+  if not ADCUI:originalIsInGamepadPreferredMode() or (newState ~= SCENE_SHOWN) then
+    return
+  end
+
+  local map = ZO_WorldMap_GetPanAndZoom()
+  map:AddTargetOffsetDelta(0, 0)
+end)
+
 -- [Player Attribute Bars]
 
 local originalZO_PlayerAttributeBars_OnGamepadPreferredModeChanged = PLAYER_ATTRIBUTE_BARS["OnGamepadPreferredModeChanged"]
@@ -372,7 +390,7 @@ local function myActionButton_HideKeys(self, hide)
   local ultimateFillFrame = GetControl(self.slot, "Frame")
   local ultimateMax = GetSlotAbilityCost(self:GetSlot())
 
-  if IsSlotUsed then
+  if IsSlotUsed(self:GetSlot()) then
     if GetUnitPower("player", POWERTYPE_ULTIMATE) >= ultimateMax then
       ultimateFillFrame:SetHidden(false)
       ultimateFillLeftTexture:SetHidden(false)
